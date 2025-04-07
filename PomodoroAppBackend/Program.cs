@@ -62,7 +62,7 @@ Console.WriteLine("seus10");
 builder.Services.AddEndpointsApiExplorer();
 Console.WriteLine("seus11");
 
-builder.Services.AddSwaggerGen();
+// builder.Services.AddSwaggerGen();
 
 Console.WriteLine("seus12");
 
