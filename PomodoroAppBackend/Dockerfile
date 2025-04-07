@@ -1,36 +1,25 @@
-# Use the official .NET SDK image for build
+# --- Build Stage ---
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-
-# Set working directory
 WORKDIR /app
 
-# Copy the project files
-COPY . .
+# Copy only project file first to leverage Docker cache
+COPY *.csproj ./
+RUN dotnet restore
 
-RUN curl https://api.nuget.org/v3/index.json
-RUN apt-get update && apt-get install -y ca-certificates
+# Now copy everything else
+COPY . ./
 
-# Restore using the local nuget.config from the image
-RUN dotnet nuget list source && \
-    dotnet restore --disable-parallel --verbosity detailed
+RUN dotnet build -c Release
+RUN dotnet publish -c Release -o out
 
-# Build the project
-RUN dotnet build -c Release || dotnet build
-
-# Publish the application
-RUN dotnet publish -c Release -o out || dotnet publish -o out
-
-# Use the official .NET ASP.NET Core runtime image for running the app
+# --- Runtime Stage ---
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-
-# Set working directory
 WORKDIR /app
 
-# Copy the published app from the build container
 COPY --from=build /app/out .
 
-# Expose the internal port 8080 for the app to run
 EXPOSE 8080
 
-# Run the application (migrations now happen automatically in Program.cs)
+ENV DOTNET_ENVIRONMENT=Production
+
 CMD ["dotnet", "PomodoroAppBackend.dll"]
