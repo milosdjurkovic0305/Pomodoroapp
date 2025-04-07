@@ -153,7 +153,7 @@ namespace PomodoroAppBackend.Controllers
                     errorMessage.Append("SuccinctNotes are null. ");
                 }
 
-                return BadRequest(errorMessage.ToString());
+                return BadRequest(errorMessage);
             }
 
             // Check if a valid SubjectId is provided
