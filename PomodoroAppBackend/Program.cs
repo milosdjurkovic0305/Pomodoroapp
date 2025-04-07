@@ -66,7 +66,32 @@ Console.WriteLine("seus11");
 
 Console.WriteLine("seus12");
 
-var app = builder.Build();
+WebApplication? app = null;
+try
+{
+    app = builder.Build();
+    Console.WriteLine("seus13");
+}
+catch (Exception ex)
+{
+    Console.WriteLine("❌ Exception during app build:");
+    Console.WriteLine($"Message: {ex.Message}");
+    Console.WriteLine($"Type: {ex.GetType()}");
+    Console.WriteLine("StackTrace:");
+    Console.WriteLine(ex.StackTrace);
+
+    if (ex.InnerException != null)
+    {
+        Console.WriteLine("🔍 Inner Exception:");
+        Console.WriteLine($"Message: {ex.InnerException.Message}");
+        Console.WriteLine("StackTrace:");
+        Console.WriteLine(ex.InnerException.StackTrace);
+    }
+
+    // Optional: exit immediately
+    Environment.Exit(1);
+}
+
 Console.WriteLine("seus13");
 
 // Check if we should only run migrations and then exit
